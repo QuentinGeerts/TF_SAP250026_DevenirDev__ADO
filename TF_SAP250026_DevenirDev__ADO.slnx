@@ -8,4 +8,8 @@
     <Deploy />
   </Project>
   <Project Path="DemoADO/DemoADO.csproj" />
+  <Project Path="ExerciceADO/ExerciceADO.sqlproj">
+    <Build />
+    <Deploy />
+  </Project>
 </Solution>
