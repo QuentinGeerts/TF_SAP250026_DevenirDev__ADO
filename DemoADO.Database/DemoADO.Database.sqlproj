@@ -57,9 +57,11 @@
   <ItemGroup>
     <Folder Include="Properties" />
     <Folder Include="Tables" />
+    <Folder Include="Views" />
   </ItemGroup>
   <ItemGroup>
     <Build Include="Tables\User.sql" />
     <Build Include="Tables\Todo.sql" />
+    <Build Include="Views\V_User.sql" />
   </ItemGroup>
 </Project>
