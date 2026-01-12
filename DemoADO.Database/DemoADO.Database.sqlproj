@@ -59,6 +59,7 @@
     <Folder Include="Tables" />
     <Folder Include="Views" />
     <Folder Include="StoredProcedures" />
+    <Folder Include="Scripts" />
   </ItemGroup>
   <ItemGroup>
     <Build Include="Tables\User.sql" />
@@ -66,5 +67,8 @@
     <Build Include="Views\V_User.sql" />
     <Build Include="StoredProcedures\SP_User_AddUser.sql" />
     <Build Include="StoredProcedures\SP_Todo_AddTodo.sql" />
+  </ItemGroup>
+  <ItemGroup>
+    <PostDeploy Include="Scripts\Script.PostDeployment1.sql" />
   </ItemGroup>
 </Project>

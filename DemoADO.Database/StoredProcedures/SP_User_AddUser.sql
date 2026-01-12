@@ -2,8 +2,7 @@
 	@Email NVARCHAR(100),
 	@Password NVARCHAR(255),
 	@Lastname NVARCHAR(50) = NULL,
-	@Firstname NVARCHAR(50) = NULL,
-	@UserId INT
+	@Firstname NVARCHAR(50) = NULL
 AS
 BEGIN
 
@@ -17,7 +16,6 @@ BEGIN
 		END
 
 		INSERT INTO [dbo].[User] (Email, Password, Lastname, Firstname)
-		OUTPUT inserted.Id INTO @UserId
 		VALUES (@Email, HASHBYTES('SHA2_256', @Password), @Lastname, @Firstname)
 
 	END TRY
