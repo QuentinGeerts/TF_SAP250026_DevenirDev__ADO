@@ -1,0 +1,7 @@
+<Solution>
+  <Project Path="DemoADO.Database/DemoADO.Database.sqlproj">
+    <Build />
+    <Deploy />
+  </Project>
+  <Project Path="DemoADO/DemoADO.csproj" />
+</Solution>
