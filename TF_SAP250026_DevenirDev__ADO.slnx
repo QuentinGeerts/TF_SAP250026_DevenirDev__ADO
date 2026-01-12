@@ -1,14 +1,14 @@
 <Solution>
-  <Project Path="AdventureWorks/AdventureWorks.sqlproj">
+  <Project Path="AdventureWorks/AdventureWorks.sqlproj" Id="67a146eb-f6bc-45e0-9f00-86f9e089d89e">
     <Build />
     <Deploy />
   </Project>
-  <Project Path="DemoADO.Database/DemoADO.Database.sqlproj">
+  <Project Path="DemoADO.Database/DemoADO.Database.sqlproj" Id="7186aec3-4bbb-4187-a132-ad4df86a5ba6">
     <Build />
     <Deploy />
   </Project>
   <Project Path="DemoADO/DemoADO.csproj" />
-  <Project Path="ExerciceADO/ExerciceADO.sqlproj">
+  <Project Path="ExerciceADO/ExerciceADO.sqlproj" Id="1de6e415-4ad5-4ec7-af31-8db16e6a72d2">
     <Build />
     <Deploy />
   </Project>
