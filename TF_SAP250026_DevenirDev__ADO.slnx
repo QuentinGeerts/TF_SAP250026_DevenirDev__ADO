@@ -1,4 +1,7 @@
 <Solution>
+  <Folder Name="/Exercices/">
+    <Project Path="ExercicePage61/ExercicePage61.csproj" Id="f1d6aa61-e658-483e-8ca9-d00953925d89" />
+  </Folder>
   <Project Path="AdventureWorks/AdventureWorks.sqlproj" Id="67a146eb-f6bc-45e0-9f00-86f9e089d89e">
     <Build />
     <Deploy />
