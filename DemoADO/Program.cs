@@ -16,7 +16,9 @@
 // a. Clic droit sur le projet => Manage NuGet Packages...
 // b. Onglet Browse => Rechercher "Microsoft.Data.SqlClient"
 // c. Sélectionner le package => Install
+using DemoADO.Models;
 using Microsoft.Data.SqlClient;
+using System.Data;
 
 // 3.  Notion de connexion
 
@@ -135,5 +137,107 @@ using (SqlConnection connection = new SqlConnection(connectionString))
         connection.Close();
 
         Console.WriteLine($"Email: {email}");
+    }
+}
+
+// 5.2.  Méthode ExecuteReader
+
+
+// C#: null
+// SQL: NULL
+// ADO: DBNull.Value
+
+Console.WriteLine($"\n5.2. Méthode ExecuteReader");
+
+using (SqlConnection connection = new SqlConnection(connectionString))
+{
+    using (SqlCommand command = connection.CreateCommand())
+    {
+        command.CommandText = "SELECT [Id], [Email], [Lastname], [Firstname] FROM [dbo].[V_User]";
+
+        connection.Open();
+        using (SqlDataReader reader = command.ExecuteReader())
+        {
+            while (reader.Read())
+            {
+                int id = (int)reader["Id"];
+                string email = (string)reader[1];
+                string? lastname = reader["Lastname"] as string;
+                string? firstname = reader["Firstname"] is DBNull ? null : (string)reader["Firstname"];
+
+                Console.WriteLine($"Id: {id}, email: {email}, lastname: {lastname}, firstname: {firstname}");
+            }
+        }
+        connection.Close();
+    }
+}
+
+// 5.3.  Méthode ExecuteNonQuery
+
+Console.WriteLine($"\n5.3. Méthode ExecuteNonQuery\n");
+
+using (SqlConnection connection = new SqlConnection(connectionString))
+{
+    using (SqlCommand command = connection.CreateCommand())
+    {
+        command.CommandText = "UPDATE [dbo].[User] SET [Email] = 'quentin.geerts@cognitic.be' WHERE [Id] = 1";
+
+        connection.Open();
+        int nbAffectedRows = command.ExecuteNonQuery();
+        connection.Close();
+
+        Console.WriteLine($"Nombre de ligne affectée: {nbAffectedRows}");
+
+        if (nbAffectedRows > 0)
+        {
+            Console.WriteLine($"Modification effectuée.");
+        }
+        else
+        {
+            Console.WriteLine($"Aucune modification effectuée.");
+        }
+    }
+}
+
+
+// 6.  Mode "déconnecté"
+
+// 6.1.  Classe SqlDataAdapter
+
+Console.WriteLine($"\n6.1. Classe SqlDataAdapter\n");
+
+DataSet dataSet = new DataSet();
+DataTable dataTable = new DataTable();
+
+using (SqlConnection connection = new SqlConnection(connectionString))
+{
+    using (SqlCommand command = connection.CreateCommand())
+    {
+        command.CommandText = "SELECT * FROM [V_User]";
+
+        SqlDataAdapter adapter = new SqlDataAdapter();
+        adapter.Fill(dataSet); // Ouverture automatique de la connexion
+        adapter.Fill(dataTable);
+    } // Fermeture automatique de la connexion
+}
+
+// Parcourt du DataSet
+if (dataSet.Tables.Count > 0)
+{
+    foreach (DataRow row in dataSet.Tables[0].Rows)
+    {
+        int id = (int)row["Id"];
+        string email = (string)row["Email"];
+    }
+}
+
+// Parcourt du DataTable
+if (dataTable.Rows.Count > 0)
+{
+    foreach(DataRow row in dataTable.Rows)
+    {
+        int id = (int)row["Id"];
+        string email = (string)row["Email"];
+        string? lastname = row["Lastname"] is DBNull ? null : (string)row["Lastname"];
     }
 }
