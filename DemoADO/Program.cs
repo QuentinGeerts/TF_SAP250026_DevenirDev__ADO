@@ -34,7 +34,7 @@ using Microsoft.Data.SqlClient;
 //  => Sélectionnez la DB sur laquelle vous souhaitez vous connecter => OK
 // d. Clic droit sur la connection => Properties (F4) => Copiez le champ "Connection String"
 
-string connectionString = @"Data Source=QUENTIN-BSTORM;Initial Catalog=Preparation;Integrated Security=True;Trust Server Certificate=True";
+string connectionString = @"Data Source=(localdb)\MSSQLLocalDB;Initial Catalog=DemoADO;Integrated Security=True;Encrypt=True;Trust Server Certificate=True";
 
 // 3.2.  Classe SqlConnection
 // Représente une connexion ouverte à une base de données SQL Server.
@@ -70,5 +70,5 @@ using (SqlConnection connection = new SqlConnection(connectionString))
     Console.WriteLine($"Data Source: {connection.DataSource}");
     Console.WriteLine($"Database: {connection.Database}");
 
-    connection.Close();
+    // connection.Close();
 }
