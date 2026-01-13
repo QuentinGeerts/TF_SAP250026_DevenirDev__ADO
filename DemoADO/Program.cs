@@ -294,3 +294,34 @@ using (SqlConnection connection = new SqlConnection(connectionString))
         connection.Close();
     }
 }
+
+
+// 8.  Requêtes paramétrées
+
+int userIdToSearch = 1;
+
+using (SqlConnection c = new SqlConnection(connectionString))
+{
+    using (SqlCommand cmd = c.CreateCommand())
+    {
+        cmd.CommandText = "SELECT * FROM V_User WHERE Id = @Id";
+        cmd.Parameters.AddWithValue("Id", userIdToSearch);
+
+        c.Open();
+
+        using (SqlDataReader r = cmd.ExecuteReader())
+        {
+            while(r.Read())
+            {
+                int id = (int)r["Id"];
+                string email = (string)r["Email"];
+                string? lastname = r["Lastname"] as string;
+                string? firstname = r["Firstname"] as string;
+
+                Console.WriteLine($"User 1: {id} {email} {lastname} {firstname}");
+            }
+        }
+
+        c.Close();
+    }
+}
