@@ -2,6 +2,7 @@
   <Folder Name="/Exercices/">
     <Project Path="ExercicePage61/ExercicePage61.csproj" Id="f1d6aa61-e658-483e-8ca9-d00953925d89" />
     <Project Path="ExercicePage78/ExercicePage78.csproj" Id="6f780ed1-5702-45c6-a66a-5b28b42645a6" />
+    <Project Path="ExercicePage86/ExercicePage86.csproj" Id="6af10959-dfca-4d8f-8fbf-08acfed18c2d" />
   </Folder>
   <Project Path="AdventureWorks/AdventureWorks.sqlproj" Id="67a146eb-f6bc-45e0-9f00-86f9e089d89e">
     <Build />
