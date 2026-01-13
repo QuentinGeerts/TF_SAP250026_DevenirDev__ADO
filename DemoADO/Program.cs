@@ -215,7 +215,7 @@ using (SqlConnection connection = new SqlConnection(connectionString))
     {
         command.CommandText = "SELECT * FROM [V_User]";
 
-        SqlDataAdapter adapter = new SqlDataAdapter();
+        SqlDataAdapter adapter = new SqlDataAdapter(command);
         adapter.Fill(dataSet); // Ouverture automatique de la connexion
         adapter.Fill(dataTable);
     } // Fermeture automatique de la connexion
@@ -228,6 +228,8 @@ if (dataSet.Tables.Count > 0)
     {
         int id = (int)row["Id"];
         string email = (string)row["Email"];
+
+        Console.WriteLine($"{id} {email}");
     }
 }
 
@@ -239,5 +241,7 @@ if (dataTable.Rows.Count > 0)
         int id = (int)row["Id"];
         string email = (string)row["Email"];
         string? lastname = row["Lastname"] is DBNull ? null : (string)row["Lastname"];
+
+        Console.WriteLine($"{id} {email} {lastname}");
     }
 }
