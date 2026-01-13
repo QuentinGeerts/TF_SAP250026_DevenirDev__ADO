@@ -12,10 +12,17 @@ Post-Deployment Script Template
 
 -- Gestion des users
 
-EXEC SP_User_AddUser 'quentin.geerts@bstorm.be', 'Test1234=', 'Geerts', 'Quentin'
-EXEC SP_User_AddUser 'thierry.morre@cognitic.be', 'Test1234?'
-EXEC SP_User_AddUser 'michael.person@cognitic.be', 'Test1234!'
-EXEC SP_User_AddUser 'samuel.legrain@cognitic.be', 'Test1234=', 'Legrain', 'Samuel'
+
+SET IDENTITY_INSERT [dbo].[User] ON;
+
+INSERT INTO [dbo].[User] (Id, Email, Password, Lastname, Firstname) VALUES
+(1, 'quentin.geerts@bstorm.be', HASHBYTES('SHA2_256', 'Test1234='), 'Geerts', 'Quentin'),
+(2, 'thierry.morre@cognitic.be', HASHBYTES('SHA2_256', 'Test1234?'), NULL, NULL),
+(3, 'michael.person@cognitic.be', HASHBYTES('SHA2_256', 'Test1234!'), NULL, NULL),
+(4, 'samuel.legrain@cognitic.be', HASHBYTES('SHA2_256', 'Test1234='), 'Legrain', 'Samuel')
+
+SET IDENTITY_INSERT [dbo].[User] OFF;
+
 
 GO
 

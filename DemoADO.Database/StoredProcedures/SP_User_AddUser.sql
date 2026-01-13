@@ -2,7 +2,8 @@
 	@Email NVARCHAR(100),
 	@Password NVARCHAR(255),
 	@Lastname NVARCHAR(50) = NULL,
-	@Firstname NVARCHAR(50) = NULL
+	@Firstname NVARCHAR(50) = NULL,
+	@UserId INT OUTPUT
 AS
 BEGIN
 
@@ -17,6 +18,8 @@ BEGIN
 
 		INSERT INTO [dbo].[User] (Email, Password, Lastname, Firstname)
 		VALUES (@Email, HASHBYTES('SHA2_256', @Password), @Lastname, @Firstname)
+
+		SELECT @UserId = @@IDENTITY FROM [dbo].[User];
 
 	END TRY
 

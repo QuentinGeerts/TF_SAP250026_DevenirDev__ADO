@@ -236,7 +236,7 @@ if (dataSet.Tables.Count > 0)
 // Parcourt du DataTable
 if (dataTable.Rows.Count > 0)
 {
-    foreach(DataRow row in dataTable.Rows)
+    foreach (DataRow row in dataTable.Rows)
     {
         int id = (int)row["Id"];
         string email = (string)row["Email"];
@@ -281,7 +281,7 @@ using (SqlConnection connection = new SqlConnection(connectionString))
         connection.Open();
         using (SqlDataReader reader = cmd.ExecuteReader())
         {
-            while(reader.Read())
+            while (reader.Read())
             {
                 int id = Convert.ToInt32(reader["Id"]);
                 string title = (string)reader["Title"];
@@ -298,6 +298,8 @@ using (SqlConnection connection = new SqlConnection(connectionString))
 
 // 8.  Requêtes paramétrées
 
+Console.WriteLine($"\n8. Requêtes paramétrées\n");
+
 int userIdToSearch = 1;
 
 using (SqlConnection c = new SqlConnection(connectionString))
@@ -311,7 +313,7 @@ using (SqlConnection c = new SqlConnection(connectionString))
 
         using (SqlDataReader r = cmd.ExecuteReader())
         {
-            while(r.Read())
+            while (r.Read())
             {
                 int id = (int)r["Id"];
                 string email = (string)r["Email"];
@@ -323,5 +325,52 @@ using (SqlConnection c = new SqlConnection(connectionString))
         }
 
         c.Close();
+    }
+}
+
+
+// 9.  Appel de procédure
+
+Console.WriteLine($"\n9. Appel de procédure\n");
+
+using (SqlConnection c = new SqlConnection(connectionString))
+{
+    using (SqlCommand cmd = c.CreateCommand ())
+    {
+        cmd.CommandText = "SP_User_AddUser";
+        cmd.CommandType = CommandType.StoredProcedure;
+
+        string email = "geerts.quentin@gmail.com";
+        string password = "Test1234=";
+        string? lastname = "Geerts";
+        string? firstname = null;
+
+        cmd.Parameters.AddWithValue("Email", email);
+        cmd.Parameters.AddWithValue("Password", password);
+        cmd.Parameters.AddWithValue("Lastname", lastname);
+        cmd.Parameters.AddWithValue("Firstname", firstname);
+
+        cmd.Parameters.Add(new SqlParameter("UserId", SqlDbType.Int)
+        {
+            Direction = ParameterDirection.Output
+        });
+
+        try
+        {
+            c.Open();
+            cmd.ExecuteNonQuery();
+            int id = (int)cmd.Parameters["UserId"].Value;
+            Console.WriteLine($"Utilisateur créé: {id}");
+            c.Close();
+        }
+        catch (SqlException e)
+        {
+            Console.WriteLine($"Sql Exception: {e.Message}");
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine($"Erreur inattendue: {e.Message}");
+        }
+
     }
 }
