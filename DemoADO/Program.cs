@@ -245,3 +245,52 @@ if (dataTable.Rows.Count > 0)
         Console.WriteLine($"{id} {email} {lastname}");
     }
 }
+
+
+
+// 7.  Mot-clef "output"
+
+Console.WriteLine($"\n7. Mot-clef \"output\"\n");
+
+using (SqlConnection connection = new SqlConnection(connectionString))
+{
+    using (SqlCommand cmd = connection.CreateCommand())
+    {
+        cmd.CommandText = @"
+        INSERT INTO Todo (Title, Description, Status, UserId)
+        OUTPUT inserted.Id
+        VALUES ('Faire à manger', 'Un plât protéiné', 'To do', 1)";
+
+        connection.Open();
+        int id = (int)cmd.ExecuteScalar();
+        connection.Close();
+
+        Console.WriteLine($"Nouveau Todo: {id}");
+    }
+}
+
+using (SqlConnection connection = new SqlConnection(connectionString))
+{
+    using (SqlCommand cmd = connection.CreateCommand())
+    {
+        cmd.CommandText = @"
+        INSERT INTO Todo (Title, Description, Status, UserId)
+        OUTPUT inserted.Id, inserted.Title, inserted.Description, inserted.UserId
+        VALUES ('Faire à manger', 'Un plât protéiné', 'To do', 1)";
+
+        connection.Open();
+        using (SqlDataReader reader = cmd.ExecuteReader())
+        {
+            while(reader.Read())
+            {
+                int id = Convert.ToInt32(reader["Id"]);
+                string title = (string)reader["Title"];
+                string? description = reader["Description"] is DBNull ? null : (string)reader["Description"];
+                int userId = (int)reader["UserId"];
+
+                Console.WriteLine($"{id} {title} {description} {userId}");
+            }
+        }
+        connection.Close();
+    }
+}
