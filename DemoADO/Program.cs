@@ -72,3 +72,68 @@ using (SqlConnection connection = new SqlConnection(connectionString))
 
     // connection.Close();
 }
+
+// 4.  Classe SqlCommand
+// Représente une requête SQL ou une procédure stockée.
+// Permetd'envoyer une requête (SELECT, UPDATE, INSERT, DELETE, ...)
+
+Console.WriteLine($"\n4. Classe SqlCommand\n");
+
+using (SqlConnection connection = new SqlConnection(connectionString))
+{
+    // a. Constructeur vide
+    using (SqlCommand command = new SqlCommand())
+    {
+        command.CommandText = "SELECT * FROM Student";
+        command.Connection = connection;
+
+        //connection.Open();
+        // ... 
+    }
+
+    // b. En fournissant la commande directement
+    using (SqlCommand command = new SqlCommand("SELECT * FROM Student"))
+    {
+        command.Connection = connection;
+
+        //connection.Open();
+        // ...
+    }
+
+    // c. En fournissant la commande directement et la connectionString
+    using (SqlCommand command = new SqlCommand("SELECT * FROM Student", connection))
+    {
+        //connection.Open();
+        // ...
+    }
+
+    // d. En utilisant la méthode CreateCommand de votre connexion
+    using (SqlCommand command = connection.CreateCommand())
+    {
+        command.CommandText = "SELECT * FROM Student";
+        //connection.Open();
+        // ... 
+    }
+}
+
+// 5.  Mode "Connecté"
+
+// 5.1.  Méthode ExecuteScalar
+// Permet d'envoyer une requête et de retourner UNE seule donnée. (Une colonne dans une seule ligne)
+// Utile pour récupérer une donnée telle que un id, count, max, min, ...
+
+Console.WriteLine($"\n5.1. Méthode ExecuteScalar\n");
+
+using (SqlConnection connection = new SqlConnection(connectionString))
+{
+    using (SqlCommand command = connection.CreateCommand())
+    {
+        command.CommandText = "SELECT [Email] FROM [dbo].[User] WHERE [Id] = 1";
+
+        connection.Open();
+        string email = (string)command.ExecuteScalar();
+        connection.Close();
+
+        Console.WriteLine($"Email: {email}");
+    }
+}
