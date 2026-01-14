@@ -119,10 +119,13 @@ using (SqlConnection connection = new SqlConnection(connectionString))
 }
 
 // 5.  Mode "Connecté"
+// Maintient la connexion ouverte pendant la lecture/manipulation des données.
+// Utilise SqlDataReader - rapide mais bloque la connexion.
+// Idéal pour : lecture séquentielle, grandes quantités de données, opérations rapides.
 
 // 5.1.  Méthode ExecuteScalar
-// Permet d'envoyer une requête et de retourner UNE seule donnée. (Une colonne dans une seule ligne)
-// Utile pour récupérer une donnée telle que un id, count, max, min, ...
+// Exécute la requête et retourne la première colonne de la première ligne du résultat.
+// Utilisée pour récupérer une valeur unique (COUNT, MAX, ID, etc.)
 
 Console.WriteLine($"\n5.1. Méthode ExecuteScalar\n");
 
@@ -141,7 +144,13 @@ using (SqlConnection connection = new SqlConnection(connectionString))
 }
 
 // 5.2.  Méthode ExecuteReader
+// Exécute la requête et retourne un SqlDataReader pour lire les lignes de résultat une par
+// une de manière séquentielle et en lecture seule
 
+// Classe SqlDataReader
+// Fournit un flux de données en lecture seule et permet parcourir les résultats
+// d'une requête ligne par ligne de manière performante.
+// Doit être fermé après utilisation.
 
 // C#: null
 // SQL: NULL
@@ -173,6 +182,8 @@ using (SqlConnection connection = new SqlConnection(connectionString))
 }
 
 // 5.3.  Méthode ExecuteNonQuery
+// Exécute une commande SQL qui ne retourne pas de résultat (INSERT, UPDATE, DELETE, CREATE TABLE, etc.).
+// Retourne le nombre de lignes affectées.
 
 Console.WriteLine($"\n5.3. Méthode ExecuteNonQuery\n");
 
@@ -201,8 +212,14 @@ using (SqlConnection connection = new SqlConnection(connectionString))
 
 
 // 6.  Mode "déconnecté"
+// Récupère les données en mémoire (DataSet/DataTable), puis ferme la connexion.
+// Utilise SqlDataAdapter - permet manipulation offline, reconnexion pour sauvegarder.
+// Idéal pour : binding UI, modifications multiples, travail offline, mise en cache.
 
-// 6.1.  Classe SqlDataAdapter
+
+// 6.1. Classe SqlDataAdapter
+// Sert de pont entre une base de données SQL Server et un DataSet/DataTable en mode déconnecté.
+// Remplit les données (Fill) et les met à jour (Update) automatiquement.
 
 Console.WriteLine($"\n6.1. Classe SqlDataAdapter\n");
 
@@ -249,6 +266,15 @@ if (dataTable.Rows.Count > 0)
 
 
 // 7.  Mot-clef "output"
+// Clause SQL Server utilisée dans INSERT, UPDATE, DELETE pour retourner les valeurs insérées/modifiées/supprimées. 
+// Permet de récupérer l'ID généré ou les anciennes/nouvelles valeurs sans requête supplémentaire.
+
+// inserted: Valeur APRÈS modification
+// deleted: Valeur AVANT modification
+
+// <!> différence entre le mot-clef "output" et le paramètre de sortie d'une procédure stockée <!>
+// OUTPUT (procédure stockée) = paramètre de sortie
+// OUTPUT(DML) = clause retournant directement les résultats
 
 Console.WriteLine($"\n7. Mot-clef \"output\"\n");
 
@@ -297,6 +323,17 @@ using (SqlConnection connection = new SqlConnection(connectionString))
 
 
 // 8.  Requêtes paramétrées
+// Requête SQL utilisant des paramètres (@Param) au lieu de concaténation de chaînes.
+// Protège contre les injections SQL, améliore les performances et gère automatiquement les types de données.
+
+/*
+ * // MAUVAIS - Concaténation (injection SQL possible)
+ * string query = "SELECT * FROM Users WHERE Username = '" + username + "'";
+ * 
+ * // BON - Requête paramétrée (sécurisée)
+ * string query = "SELECT * FROM Users WHERE Username = @Username";
+ * cmd.Parameters.AddWithValue("@Username", username);
+ */
 
 Console.WriteLine($"\n8. Requêtes paramétrées\n");
 
@@ -330,6 +367,9 @@ using (SqlConnection c = new SqlConnection(connectionString))
 
 
 // 9.  Appel de procédure
+// Exécution d'une procédure stockée SQL Server via SqlCommand en définissant CommandType = CommandType.StoredProcedure. 
+// Permet de passer des paramètres d'entrée/sortie et de récupérer les résultats.
+// Nécessite un SqlParameter avec Direction = ParameterDirection.Output pour récupérer la valeur.
 
 Console.WriteLine($"\n9. Appel de procédure\n");
 
@@ -372,5 +412,47 @@ using (SqlConnection c = new SqlConnection(connectionString))
             Console.WriteLine($"Erreur inattendue: {e.Message}");
         }
 
+    }
+}
+
+
+/* Ceci n'a pas été fait en cours */
+
+// 10.  Gestion des transactions (Classe SqlTransaction)
+// Représente une transaction SQL Server permettant de regrouper plusieurs opérations en une unité atomique.
+// Toutes les opérations réussissent (Commit) ou échouent ensemble (Rollback).
+
+Console.WriteLine($"\n9. Gestion des transactions\n");
+
+using (SqlConnection connection = new SqlConnection(connectionString))
+{
+    connection.Open();
+    using (SqlTransaction transaction = connection.BeginTransaction()) // Créé un point de restauration
+    {
+        int modifiedRows = 0;
+
+        using (SqlCommand command = connection.CreateCommand())
+        {
+            command.CommandText = "DELETE FROM [dbo].[User] WHERE Id = 2";
+            command.Transaction = transaction;
+
+            modifiedRows = command.ExecuteNonQuery();
+            Console.WriteLine($"ModifiedRows: {modifiedRows}");
+        }
+
+        if (modifiedRows == 0)
+        {
+            Console.WriteLine($"Transaction annulée");
+            // Annule toutes les modifications effectuées dans la transaction et restaure l'état initial
+            // de la base de données. Utilisé en cas d'erreur.
+            transaction.Rollback();
+        }
+        else
+        {
+            Console.WriteLine($"Transaction confirmée");
+            // Valide définitivement toutes les modifications effectuées dans la transaction.
+            // Les changements deviennent permanents dans la base de données.
+            transaction.Commit();
+        }
     }
 }
